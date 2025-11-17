@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../controllers/ganho_controller.dart';
 import '../controllers/gasto_controller.dart';
 import 'form_page.dart';
@@ -32,20 +33,6 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const CircleAvatar(radius: 24),
-                  const SizedBox(width: 12),
-                  Container(
-                    height: 26,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  )
-                ],
-              ),
               const SizedBox(height: 20),
               const Text('Seu saldo', style: TextStyle(fontSize: 14, color: Colors.black54)),
               const SizedBox(height: 6),
@@ -129,6 +116,17 @@ class _DashboardPageState extends State<DashboardPage> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      Container(
+                        height: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        child: LineChart(_buildLineChartData()),
+                      ),
                     ],
                   ),
                 ),
@@ -156,6 +154,65 @@ class _DashboardPageState extends State<DashboardPage> {
     final todos = [...ganhos, ...gastos];
     todos.sort((a, b) => b.data.compareTo(a.data));
     return todos;
+  }
+
+  LineChartData _buildLineChartData() {
+    final pontos = _saldoSeries();
+    double minY = 0, maxY = 0;
+    if (pontos.isNotEmpty) {
+      minY = pontos.map((e) => e.y).reduce((a, b) => a < b ? a : b);
+      maxY = pontos.map((e) => e.y).reduce((a, b) => a > b ? a : b);
+      if (minY == maxY) {
+        minY = minY - 1;
+        maxY = maxY + 1;
+      }
+    }
+
+    final saldoFinal = pontos.isEmpty ? 0.0 : pontos.last.y;
+    final corGrafico = saldoFinal >= 0 ? Colors.blue : Colors.red;
+
+    return LineChartData(
+      gridData: FlGridData(show: false),
+      titlesData: FlTitlesData(show: false),
+      borderData: FlBorderData(show: false),
+      minX: 0,
+      maxX: pontos.isEmpty ? 1 : pontos.last.x,
+      minY: minY,
+      maxY: maxY,
+      lineBarsData: [
+        LineChartBarData(
+          spots: pontos,
+          isCurved: true,
+          color: corGrafico,
+          barWidth: 3,
+          dotData: FlDotData(show: false),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: [
+                corGrafico.withValues(alpha: 0.3),
+                corGrafico.withValues(alpha: 0.05),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<FlSpot> _saldoSeries() {
+    final trans = _transacoesOrdenadas().toList()
+      ..sort((a, b) => a.data.compareTo(b.data));
+    final spots = <FlSpot>[];
+    double saldo = 0;
+    for (int i = 0; i < trans.length; i++) {
+      final t = trans[i];
+      saldo += t.isDespesa ? -t.valor : t.valor;
+      spots.add(FlSpot(i.toDouble(), saldo));
+    }
+    return spots.isEmpty ? [FlSpot(0, 0)] : spots;
   }
 }
 
