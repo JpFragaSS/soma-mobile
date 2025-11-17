@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/gastos_home_page.dart';
+import 'pages/dashboard_page.dart';
 
 void main() {
   runApp(const MeuApp());
@@ -13,7 +13,7 @@ class MeuApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Finanças',
-      home: GastosHomePage(),
+      home: DashboardPage(),
     );
   }
 }
