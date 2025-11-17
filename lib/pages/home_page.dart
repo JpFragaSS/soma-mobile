@@ -3,7 +3,7 @@ import '../controllers/ganho_controller.dart';
 import 'form_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();

@@ -6,7 +6,7 @@ class FormPage extends StatefulWidget {
   final GanhoController controller;
   final Ganho? ganhoParaEditar;
 
-  FormPage({required this.controller, this.ganhoParaEditar});
+  const FormPage({super.key, required this.controller, this.ganhoParaEditar});
 
   @override
   State<FormPage> createState() => _FormPageState();

@@ -6,7 +6,11 @@ class GastosFormPage extends StatefulWidget {
   final GastoController controller;
   final Gasto? gastoParaEditar;
 
-  GastosFormPage({required this.controller, this.gastoParaEditar});
+  const GastosFormPage({
+    super.key,
+    required this.controller,
+    this.gastoParaEditar,
+  });
 
   @override
   State<GastosFormPage> createState() => _GastosFormPageState();

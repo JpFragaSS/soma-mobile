@@ -3,7 +3,7 @@ import '../controllers/gasto_controller.dart';
 import 'gastos_form_page.dart';
 
 class GastosHomePage extends StatefulWidget {
-  GastosHomePage({super.key});
+  const GastosHomePage({super.key});
 
   @override
   State<GastosHomePage> createState() => _GastosHomePageState();
